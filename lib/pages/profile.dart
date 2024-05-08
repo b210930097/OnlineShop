@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:online_shop/pages/login.dart';
 import 'package:online_shop/pages/profileSettings.dart';
+import 'package:online_shop/pages/saved.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -15,11 +17,10 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 235, 235, 235),
-        // Using a custom back icon
         leading: IconButton(
           icon: Icon(
-            Icons.arrow_back_ios_rounded, // Replace with your custom icon
-            color: Colors.black, // Customize icon color
+            Icons.arrow_back_ios_rounded,
+            color: Colors.black,
           ),
           onPressed: () {
             Navigator.of(context).pop();
@@ -50,13 +51,13 @@ class _ProfileState extends State<Profile> {
                 context,
                 SvgPicture.asset('assets/icon/user.svg'),
                 'Хадгалсан',
-                () => const Placeholder()),
+                () => Saved()),
             SizedBox(height: 28),
             _buildProfileStatus(
                 context,
                 SvgPicture.asset('assets/icon/user.svg'),
                 'Гарах',
-                () => const Placeholder()),
+                () => LoginScreen()),
           ],
         ),
       ),
@@ -85,6 +86,7 @@ class _ProfileState extends State<Profile> {
           await Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => pageBuilder()),
           );
+          // Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
           setState(() {});
         },
         child: Row(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:online_shop/pages/profile.dart';
 import 'package:online_shop/pages/detail.dart';
+import 'package:online_shop/pages/category.dart';
 
 class Home extends StatefulWidget {
   static const route = '/home';
@@ -17,6 +18,13 @@ class _HomeState extends State<Home> {
   List<String> items = [
     'Үнэтэй',
     'Хямд',
+  ];
+  List<String> categoryList = [
+    'Малгай',
+    'Даашинз',
+    'Цамц',
+    'Өмд',
+    'Гутал',
   ];
 
   @override
@@ -66,11 +74,8 @@ class _HomeState extends State<Home> {
                 padding: const EdgeInsets.only(left: 36),
                 child: Column(
                   children: [
-                    _buildDrawerItem(context, 'Малгай'),
-                    _buildDrawerItem(context, 'Даашинз'),
-                    _buildDrawerItem(context, 'Цамц'),
-                    _buildDrawerItem(context, 'Өмд'),
-                    _buildDrawerItem(context, 'Гутал'),
+                    for (var item in categoryList)
+                      _buildDrawerItem(context, item),
                   ],
                 ),
               )
@@ -135,7 +140,7 @@ class _HomeState extends State<Home> {
                 ),
               ],
             ),
-            _buildFooterCart(), // Add footer cart here
+            _buildFooterCart(),
           ],
         ),
       ),
@@ -146,8 +151,15 @@ class _HomeState extends State<Home> {
     return ListTile(
       title: Text(title),
       onTap: () async {
-        await Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => Placeholder()));
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => CategoryShow(
+              category: title,
+              categoryList: categoryList,
+            ),
+          ),
+        );
+        setState(() {});
       },
     );
   }
