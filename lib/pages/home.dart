@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:online_shop/pages/profile.dart';
-import 'package:online_shop/pages/detail.dart';
+import 'package:online_shop/components/product_list.dart';
+import 'package:online_shop/components/search_bar.dart';
+import 'package:online_shop/components/sort.dart';
 import 'package:online_shop/pages/category.dart';
+import 'package:online_shop/pages/profile.dart';
 
 class Home extends StatefulWidget {
   static const route = '/home';
@@ -12,13 +14,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  String? selectedValue;
+  String? searchQuery;
+  int totalAmount = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  List<String> items = [
-    'Үнэтэй',
-    'Хямд',
-  ];
   List<String> categoryList = [
     'Малгай',
     'Даашинз',
@@ -67,7 +65,7 @@ class _HomeState extends State<Home> {
             children: [
               const Padding(
                 padding: EdgeInsets.only(top: 100, left: 18, bottom: 56),
-                child: Text('Category',
+                child: Text('Төрөл',
                     style: TextStyle(fontFamily: 'Jaldi', fontSize: 50)),
               ),
               Padding(
@@ -75,7 +73,20 @@ class _HomeState extends State<Home> {
                 child: Column(
                   children: [
                     for (var item in categoryList)
-                      _buildDrawerItem(context, item),
+                      ListTile(
+                        title: Text(item),
+                        onTap: () async {
+                          await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => CategoryShow(
+                                category: item,
+                                categoryList: categoryList,
+                              ),
+                            ),
+                          );
+                          setState(() {});
+                        },
+                      )
                   ],
                 ),
               )
@@ -91,49 +102,46 @@ class _HomeState extends State<Home> {
             Column(
               children: [
                 Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 235, 235, 235),
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 235, 235, 235),
                     borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(50),
                         bottomRight: Radius.circular(50)),
                   ),
                   width: double.infinity,
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 17, vertical: 28),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 17, vertical: 28),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Welcome back',
+                        const Text('Тавтай морил',
                             style:
                                 TextStyle(fontFamily: 'Jaldi', fontSize: 24)),
-                        SizedBox(height: 38),
-                        Row(
-                          children: [
-                            SvgPicture.asset('assets/icon/search.svg'),
-                            SizedBox(width: 18),
-                            Expanded(
-                              child: TextField(
-                                decoration: InputDecoration(
-                                    hintText: 'Search product',
-                                    border: InputBorder.none),
-                              ),
-                            ),
-                          ],
+                        const SizedBox(height: 38),
+                        Search(
+                          onChanged: (value) {
+                            setState(() {
+                              searchQuery = value;
+                            });
+                          },
                         ),
-                        SizedBox(height: 38),
-                        Row(
+                        const SizedBox(height: 38),
+                        const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Popular products',
-                                style: TextStyle(
-                                    fontFamily: 'Jaldi',
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold)),
-                            _buildDropdownMenu(),
+                            Text(
+                              'Бүх бараа',
+                              style: TextStyle(
+                                  fontFamily: 'Jaldi',
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Sort()
                           ],
                         ),
-                        SizedBox(height: 16),
-                        _buildProductGrid(),
+                        const SizedBox(height: 16),
+                        ProductList(searchQuery: searchQuery)
                       ],
                     ),
                   ),
@@ -143,125 +151,6 @@ class _HomeState extends State<Home> {
             _buildFooterCart(),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildDrawerItem(BuildContext context, String title) {
-    return ListTile(
-      title: Text(title),
-      onTap: () async {
-        await Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => CategoryShow(
-              category: title,
-              categoryList: categoryList,
-            ),
-          ),
-        );
-        setState(() {});
-      },
-    );
-  }
-
-  Widget _buildDropdownMenu() {
-    return SizedBox(
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: DropdownButton<String>(
-          hint: Text('Эрэмбэлэх'),
-          value: selectedValue,
-          onChanged: (String? newValue) {
-            setState(() {
-              selectedValue = newValue;
-            });
-          },
-          items: items.map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProductGrid() {
-    return SizedBox(
-      height: 330,
-      width: double.infinity,
-      child: GridView.count(
-        crossAxisSpacing: 17,
-        mainAxisSpacing: 30,
-        crossAxisCount: 2,
-        children: List.generate(6, (index) {
-          return _postImage(context, "assets/image/pro2.jpeg");
-        }),
-      ),
-    );
-  }
-
-  Widget _postImage(BuildContext context, String image) {
-    return GestureDetector(
-      onTap: () async {
-        await Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) =>
-                Detail(code: 'Coat Code #2147', price: '325,000')));
-      },
-      child: Stack(
-        children: [
-          Image.asset(image),
-          Padding(
-            padding: EdgeInsets.all(7),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      width: 32,
-                      child: Icon(Icons.shopping_cart),
-                    ),
-                  ],
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Coat Code #2147',
-                          style: TextStyle(
-                              fontFamily: 'Jaldi',
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          "325,000₮",
-                          style: TextStyle(
-                              fontFamily: 'Jaldi',
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromRGBO(85, 85, 85, 100)),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            ),
-          )
-        ],
       ),
     );
   }
@@ -279,23 +168,25 @@ class _HomeState extends State<Home> {
           children: [
             IconButton(
               icon: Icon(Icons.shopping_cart),
-              onPressed: () {
-                // Handle cart button tap
-              },
+              onPressed: () {},
             ),
             Text(
-              'Total: \$0.00',
+              'Total: \$${totalAmount.toStringAsFixed(2)}',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             ElevatedButton(
-              onPressed: () {
-                // Handle checkout button tap
-              },
+              onPressed: clearTotal,
               child: Text('Checkout'),
             ),
           ],
         ),
       ),
     );
+  }
+
+  void clearTotal() {
+    setState(() {
+      totalAmount = 0;
+    });
   }
 }

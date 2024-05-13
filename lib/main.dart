@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:online_shop/pages/login.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:online_shop/firebase_options.dart';
+import 'package:online_shop/pages/sign_in.dart';
 import 'package:online_shop/pages/home.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -18,8 +24,8 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        '/': (context) => const LoginScreen(),
-        LoginScreen.route: (context) => const LoginScreen(),
+        '/': (context) => Home(),
+        // SignIn.route: (context) => const SignIn(),
         Home.route: (context) => Home(),
       },
       initialRoute: '/',

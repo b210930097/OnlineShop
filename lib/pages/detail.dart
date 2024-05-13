@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class Detail extends StatefulWidget {
+  final String name;
   final String code;
-  final String price;
+  final int price;
+  final String image;
 
-  const Detail({Key? key, required this.code, required this.price})
+  const Detail(
+      {Key? key,
+      required this.name,
+      required this.code,
+      required this.price,
+      required this.image})
       : super(key: key);
   @override
   State<Detail> createState() => _DetailState();
@@ -17,7 +24,7 @@ class _DetailState extends State<Detail> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.code,
+          widget.name,
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.white,
@@ -32,7 +39,7 @@ class _DetailState extends State<Detail> {
           children: [
             Center(
               child: SizedBox(
-                child: Image.asset("assets/image/login.png"),
+                child: Image.network(widget.image),
               ),
             ),
           ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:online_shop/pages/login.dart';
+import 'package:online_shop/pages/sign_in.dart';
 import 'package:online_shop/pages/profileSettings.dart';
 import 'package:online_shop/pages/saved.dart';
 
@@ -57,7 +57,7 @@ class _ProfileState extends State<Profile> {
                 context,
                 SvgPicture.asset('assets/icon/user.svg'),
                 'Гарах',
-                () => LoginScreen()),
+                () => SignIn()),
           ],
         ),
       ),
